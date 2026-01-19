@@ -1,15 +1,11 @@
-version: "3.8"
+version: "3.9"
 
 services:
-  frontend:
-    container_name: boldburst-frontend-app
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: boldburst-frontend:latest
+  boldburst-frontend:
+    build: .
+    container_name: boldburst-frontend
     ports:
       - "3001:3001"
+    restart: always
     env_file:
       - .env.production
-    network_mode: "host"
-    restart: always
