@@ -2,10 +2,10 @@ version: "3.9"
 
 services:
   boldburst-frontend:
-    build: .
     container_name: boldburst-frontend
+    image: boldburst-frontend:latest
     ports:
       - "3001:3001"
-    restart: always
     env_file:
       - .env.production
+    restart: always
