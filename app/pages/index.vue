@@ -75,7 +75,7 @@
             <h3 class="font-black text-xl mb-1 text-gray-900 italic tracking-tight uppercase truncate">{{ product.name }}</h3>
             <p class="text-gray-500 mb-4 text-xs font-medium tracking-widest uppercase">Special Collection</p>
             <div class="flex justify-between items-center">
-              <span class="font-black text-2xl text-primary-600 tracking-tighter">${{ product.price }}</span>
+              <span class="font-black text-2xl text-primary-600 tracking-tighter">₹{{ product.price * 91 }}</span>
               <UButton color="neutral" variant="solid" size="md" class="font-bold rounded-lg px-4" label="Details" />
             </div>
           </NuxtLink>

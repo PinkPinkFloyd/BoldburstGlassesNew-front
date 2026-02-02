@@ -14,6 +14,9 @@
           <NuxtLink v-for="cat in categories" :key="cat.name" :to="cat.path" class="text-gray-600 dark:text-gray-300 hover:text-primary-600 transition">
             {{ cat.name }}
           </NuxtLink>
+          <NuxtLink to="/contact-us" class="text-gray-600 dark:text-gray-300 hover:text-primary-600 transition">
+            Contact Us
+          </NuxtLink>
         </div>
 
         <!-- Right Side: Cart & User -->

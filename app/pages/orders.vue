@@ -15,32 +15,31 @@
           </div>
           <div>
             <p class="text-xs font-bold text-gray-500 uppercase tracking-wide">Total</p>
-            <p class="font-medium text-gray-900">${{ Number(order.totalAmount).toFixed(2) }}</p>
+            <p class="font-medium text-gray-900">₹{{ Number(order.totalAmount  * 91).toFixed(2) }}</p>
           </div>
           <div>
             <p class="text-xs font-bold text-gray-500 uppercase tracking-wide">Status</p>
-             <UBadge :color="statusColor(order.status)" variant="subtle">{{ order.status }}</UBadge>
+            <UBadge :color="statusColor(order.status)" variant="subtle">{{ order.status }}</UBadge>
           </div>
           <div class="text-right">
-             <p class="text-xs font-bold text-gray-500 uppercase tracking-wide">Order #</p>
-             <p class="font-medium text-gray-900">{{ order.id }}</p>
+            <p class="text-xs font-bold text-gray-500 uppercase tracking-wide">Order #</p>
+            <p class="font-medium text-gray-900">{{ order.id }}</p>
           </div>
         </div>
-        
+
         <div class="p-6">
           <div v-for="item in order.items" :key="item.id" class="flex gap-4 mb-4 last:mb-0">
-             <div class="w-16 h-16 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
-               <!-- Safe image access -->
-               <img 
-                 :src="item.productVariant?.product?.images?.[0]?.url || 'https://placehold.co/100'" 
-                 class="w-full h-full object-cover"
-               >
-             </div>
-             <div>
-               <h4 class="font-bold text-gray-900">{{ item.productVariant?.product?.name || 'Unknown Product' }}</h4>
-               <p class="text-sm text-gray-500">Qty: {{ item.quantity }}</p>
-               <p class="text-sm text-gray-500">{{ item.productVariant?.color }} / {{ item.productVariant?.lensType }}</p>
-             </div>
+            <div class="w-16 h-16 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
+              <!-- Safe image access -->
+              <img :src="item.productVariant?.product?.images?.[0]?.url || 'https://placehold.co/100'"
+                class="w-full h-full object-cover">
+            </div>
+            <div>
+              <h4 class="font-bold text-gray-900">{{ item.productVariant?.product?.name || 'Unknown Product' }}</h4>
+              <p class="text-sm text-gray-500">Qty: {{ item.quantity }}</p>
+              <p class="text-sm text-gray-500">{{ item.productVariant?.color }} / {{ item.productVariant?.lensType }}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -58,15 +57,20 @@
 <script setup>
 const auth = useAuthStore()
 const config = useRuntimeConfig()
-
+const { $api } = useNuxtApp()
 // Fetch orders if user is logged in
-const { data: orders, pending } = await useFetch(() => auth.user ? `/orders/user/${auth.user.id}` : null, {
-  baseURL: config.public.apiBase,
-  immediate: !!auth.user
+const pending = ref(true)
+const orders = ref(null)
+onMounted(async () => {
+  let data = await $api('/orders', {
+    method: 'GET',
+  })
+  pending.value = false
+  orders.value = data
 })
 
 const statusColor = (status) => {
-  switch(status) {
+  switch (status) {
     case 'DELIVERED': return 'success'
     case 'SHIPPED': return 'info'
     case 'PENDING': return 'warning'

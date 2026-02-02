@@ -18,7 +18,7 @@
                 <p class="text-sm text-gray-500 capitalize">{{ item.selectedColor }} Frame, {{ item.selectedLens }} Lens
                 </p>
               </div>
-              <p class="font-bold text-gray-900">${{ item.price * item.quantity }}</p>
+              <p class="font-bold text-gray-900">₹{{ item.price * item.quantity }}</p>
             </div>
 
             <div class="flex justify-between items-center mt-4">
@@ -42,7 +42,7 @@
           <div class="space-y-4 mb-6">
             <div class="flex justify-between text-gray-600">
               <span>Subtotal</span>
-              <span>${{ cart.totalPrice.toFixed(2) }}</span>
+              <span>₹{{ (cart.totalPrice * 91).toFixed(2) }}</span>
             </div>
             <div class="flex justify-between text-gray-600">
               <span>Shipping</span>
@@ -50,11 +50,11 @@
             </div>
             <div class="flex justify-between text-gray-600">
               <span>Tax (Est.)</span>
-              <span>${{ (cart.totalPrice * 0.08).toFixed(2) }}</span>
+              <span>₹{{ (cart.totalPrice * 0.08 * 91).toFixed(2) }}</span>
             </div>
             <div class="border-t border-gray-200 pt-4 flex justify-between font-bold text-lg">
               <span>Total</span>
-              <span>${{ (cart.totalPrice * 1.08).toFixed(2) }}</span>
+              <span>₹{{ (cart.totalPrice * 1.08 * 91).toFixed(2) }}</span>
             </div>
           </div>
           <UButton to="/checkout" block size="xl" color="primary" class="font-bold">Proceed to Checkout</UButton>
@@ -94,6 +94,7 @@ const getCats = async() => {
     for (let item of data.items) {
         let params = {
           id: item.product.id,
+          productVariantId: item.productVariant.id,
           cartItemId: item.id,
           name: item.product.name,
           price: Number(item.product.price), // Ensure number

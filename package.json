@@ -18,7 +18,9 @@
     "@nuxt/ui": "^4.3.0",
     "@pinia/nuxt": "^0.11.3",
     "nuxt": "^4.2.2",
-    "pinia": "^3.0.4"
+    "pinia": "^3.0.4",
+    "qrcode": "^1.5.4",
+    "set-promise-interval": "^1.1.0"
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.12.1",

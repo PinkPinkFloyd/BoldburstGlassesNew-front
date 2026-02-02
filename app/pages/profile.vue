@@ -25,7 +25,7 @@
         <div class="p-6 space-y-4">
            <div class="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-700">
               <span class="text-gray-700 dark:text-gray-300">My Orders</span>
-               <UButton to="/orders" variant="ghost" icon="i-heroicons-shopping-bag" color="gray">View History</UButton>
+               <UButton to="/orders" variant="ghost" icon="i-heroicons-shopping-bag" >View History</UButton>
            </div>
            
            <div class="pt-4">

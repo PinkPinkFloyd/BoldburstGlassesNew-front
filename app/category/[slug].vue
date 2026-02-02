@@ -23,7 +23,7 @@
           <div class="p-4">
             <h3 class="font-bold mb-1 text-gray-900">{{ product.name }}</h3>
             <div class="flex justify-between items-center mt-4">
-              <span class="text-xl font-bold text-primary-600">${{ product.price }}</span>
+              <span class="text-xl font-bold text-primary-600">₹{{ product.price * 91 }}</span>
               <div class="flex gap-1">
                 <div v-for="color in product.colors" :key="color" :class="`w-3 h-3 rounded-full bg-${color}-500 border border-gray-200`"></div>
               </div>
