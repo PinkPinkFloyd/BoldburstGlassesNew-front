@@ -3,7 +3,7 @@ name: CI/CD Docker Deploy
 on:
   push:
     branches:
-      - main  # 只在 main 分支 push 时触发
+      - main
 
 jobs:
   build-and-deploy:
@@ -14,13 +14,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2️⃣ 安装 Node.js
+      # 2️⃣ 设置 Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
 
-      # 3️⃣ 安装依赖 & 构建项目
+      # 3️⃣ 安装依赖并构建
       - name: Install & Build
         run: |
           npm install
@@ -33,26 +33,25 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # 5️⃣ Build Docker 镜像并打 tag
-      - name: Build Docker Image
+      # 5️⃣ Build Docker 镜像并 push
+      - name: Build & Push Docker Image
         run: |
           docker build -t ${{ secrets.REGISTRY }}/boldburst-frontend:latest .
-
-      # 6️⃣ Push 镜像到 Docker Hub
-      - name: Push Docker Image
-        run: |
           docker push ${{ secrets.REGISTRY }}/boldburst-frontend:latest
 
-      # 7️⃣ SSH 到跳板机，然后到内网服务器部署
-      - name: Deploy to Server
+      # 6️⃣ SSH 到跳板机，同步 docker-compose.yml 并在内网服务器部署
+      - name: Deploy to internal server via Bastion
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.BASTION_HOST }}          # 跳板机 IP
-          username: ${{ secrets.BASTION_USER }}      # 跳板机用户名
-          key: ${{ secrets.BASTION_SSH_KEY }}        # 跳板机 SSH 私钥
+          host: ${{ secrets.BASTION_HOST }}      # 跳板机 IP
+          username: ${{ secrets.BASTION_USER }}  # 跳板机用户名
+          key: ${{ secrets.BASTION_SSH_KEY }}    # 跳板机私钥
           script: |
-            echo "Deploying on internal server..."
-            ssh ${{ secrets.INTERNAL_USER }} << 'EOF'
-              docker pull ${{ secrets.REGISTRY }}/boldburst-frontend:latest
-              docker-compose -f /path/to/docker-compose.yml up -d
-            EOF
+            echo "Syncing docker-compose.yml to internal server..."
+            scp -o StrictHostKeyChecking=no ./docker-compose.yml inspay-admin:/srv/dockerWeb/boldburstGlassesNew-front/docker-compose.yml
+
+            echo "Pulling latest Docker image and restarting container..."
+            ssh inspay-admin "
+              sudo docker pull ${{ secrets.REGISTRY }}/boldburst-frontend:latest
+              sudo docker-compose -f /srv/dockerWeb/boldburstGlassesNew-front/docker-compose.yml up -d
+            "
