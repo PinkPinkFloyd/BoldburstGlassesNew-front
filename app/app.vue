@@ -9,13 +9,8 @@
         <NuxtPage />
       </main>
 
-      <!-- Footer -->
-      <footer class="border-t border-gray-200 dark:border-gray-800 py-8 bg-white dark:bg-gray-900 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 text-center text-gray-500">
-          <p>&copy; 2026 BoldburstGlasses. All rights reserved.</p>
-          <p class="text-xs mt-2 italic text-gray-400">Premium eyewear for your clear vision.</p>
-        </div>
-      </footer>
+      <!-- Footer component -->
+      <AppFooter />
     </div>
   </UApp>
 </template>

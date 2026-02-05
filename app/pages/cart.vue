@@ -18,7 +18,7 @@
                 <p class="text-sm text-gray-500 capitalize">{{ item.selectedColor }} Frame, {{ item.selectedLens }} Lens
                 </p>
               </div>
-              <p class="font-bold text-gray-900">₹{{ item.price * item.quantity }}</p>
+              <p class="font-bold text-gray-900">₹{{ (item.price * 91 * item.quantity).toFixed(2) }}</p>
             </div>
 
             <div class="flex justify-between items-center mt-4">
@@ -97,7 +97,7 @@ const getCats = async() => {
           productVariantId: item.productVariant.id,
           cartItemId: item.id,
           name: item.product.name,
-          price: Number(item.product.price), // Ensure number
+          price: Number((item.product.price * 91).toFixed(2)), // Ensure number
           selectedColor: item.productVariant.color,
           selectedLens: item.productVariant.lensType,
           image:item.product.images[0].url,

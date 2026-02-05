@@ -1,0 +1,22 @@
+name: Test SSH
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: SSH to Bastion
+      uses: appleboy/ssh-action@v1
+      with:
+        host: ${{ secrets.BASTION_HOST }}
+        username: ${{ secrets.BASTION_USER }}
+        key: ${{ secrets.BASTION_SSH_KEY }}
+        script: |
+          echo "我已经成功从 GitHub Actions 登录到跳板机了"
+          hostname
+          whoami

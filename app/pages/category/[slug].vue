@@ -62,7 +62,7 @@
           </div>
           
           <div class="flex justify-between items-center mt-auto">
-            <span class="font-black text-xl text-primary-600 tracking-tighter">₹{{ product.price * 91 }}</span>
+            <span class="font-black text-xl text-primary-600 tracking-tighter">₹{{ (product.price * 91).toFixed(2) }}</span>
             <UButton 
               color="neutral" 
               variant="solid" 
