@@ -51,7 +51,7 @@ jobs:
           key: ${{ secrets.BASTION_SSH_KEY }}    # 跳板机私钥
           script: |
             echo "Syncing docker-compose.yml to internal server..."
-            scp -o StrictHostKeyChecking=no ./docker-compose.yml inspay-admin:/srv/dockerWeb/boldburstGlassesNew-front/docker-compose.yml
+            scp -o StrictHostKeyChecking=no $GITHUB_WORKSPACE/docker-compose.yml inspay-admin:/srv/dockerWeb/boldburstGlassesNew-front/docker-compose.yml
 
             echo "Pulling latest Docker image and restarting container..."
             ssh inspay-admin "
