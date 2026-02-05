@@ -17,6 +17,6 @@ jobs:
         username: ${{ secrets.BASTION_USER }}
         key: ${{ secrets.BASTION_SSH_KEY }}
         script: |
-          echo "我已经成功从 GitHub Actions 登录到跳板机了"
+          echo "我已经成功从 GitHub Actions 登录到跳板机了,再试一下"
           hostname
           whoami
