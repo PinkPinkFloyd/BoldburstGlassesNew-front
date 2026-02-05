@@ -19,6 +19,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20'
+          cache: 'npm'
+          check-latest: true
+
 
       # 3️⃣ 安装依赖并构建
       - name: Install & Build
