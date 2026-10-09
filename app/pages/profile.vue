@@ -29,7 +29,7 @@
            </div>
            
            <div class="pt-4">
-              <UButton @click="handleLogout" color="red" variant="outline" block icon="i-heroicons-arrow-right-on-rectangle">
+              <UButton color="error" variant="outline" block icon="i-heroicons-arrow-right-on-rectangle" @click="handleLogout">
                 Sign Out
               </UButton>
            </div>
@@ -54,8 +54,8 @@ const toast = useToast()
 // For now, we rely on the store.
 const user = computed(() => auth.user)
 
-const handleLogout = () => {
-  auth.logout()
+const handleLogout = async () => {
+  await auth.logout()
   toast.add({ title: 'Logged out successfully', icon: 'i-heroicons-arrow-left-on-rectangle' })
   router.push('/login')
 }

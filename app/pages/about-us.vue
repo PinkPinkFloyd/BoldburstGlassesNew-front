@@ -2,7 +2,7 @@
   <div class="max-w-4xl mx-auto py-12">
     <div class="mb-12">
       <h1 class="text-5xl font-black text-gray-900 italic uppercase tracking-tighter mb-4">About Us</h1>
-      <div class="h-1 w-20 bg-primary-500"></div>
+      <div class="h-1 w-20 bg-primary-500"/>
     </div>
 
     <div class="prose prose-lg max-w-none text-gray-600 space-y-8">

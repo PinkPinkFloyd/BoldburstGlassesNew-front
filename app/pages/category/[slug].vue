@@ -2,9 +2,9 @@
   <div>
     <!-- Category Hero Banner -->
     <div class="relative rounded-3xl overflow-hidden bg-gray-900 h-64 mb-12 shadow-xl group">
-      <div class="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent opacity-80 z-10"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent opacity-80 z-10"/>
       <img :src="categoryImages" :alt="slug" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700">
-      <div class="relative z-20 h-full flex flex-col justify-center px-12 text-white">
+      <div class="relative z-20 h-full flex flex-col justify-center px-6 sm:px-12 text-white">
         <UBadge color="primary" variant="solid" class="w-fit mb-3 px-3 py-1 text-[10px] font-bold uppercase tracking-widest">Collection 2026</UBadge>
         <h1 class="text-5xl font-black italic tracking-tighter uppercase leading-none">{{ slug }}</h1>
         <p class="text-gray-300 mt-4 max-w-md font-medium text-sm leading-relaxed">
@@ -32,9 +32,9 @@
     <!-- Loading State -->
     <div v-if="pending" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 py-12">
       <div v-for="i in 8" :key="i" class="animate-pulse">
-        <div class="aspect-square bg-gray-100 rounded-2xl mb-4"></div>
-        <div class="h-6 bg-gray-100 rounded w-3/4 mb-2"></div>
-        <div class="h-4 bg-gray-100 rounded w-1/2"></div>
+        <div class="aspect-square bg-gray-100 rounded-2xl mb-4"/>
+        <div class="h-6 bg-gray-100 rounded w-3/4 mb-2"/>
+        <div class="h-4 bg-gray-100 rounded w-1/2"/>
       </div>
     </div>
 
@@ -87,15 +87,16 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { Product } from '~/types/shop'
 const route = useRoute()
-const config = useRuntimeConfig()
-const slug = computed(() => route.params.slug)
+const { $api } = useNuxtApp()
+const slug = computed(() => String(route.params.slug))
 const sort = ref('Popular')
 
 // Category Images Mapping
 const categoryImages = computed(() => {
-  const images = {
+  const images: Record<string, string> = {
     myopia: 'https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&q=80&w=1200',
     sunglasses: 'https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?auto=format&fit=crop&q=80&w=1200',
     reading: 'https://images.unsplash.com/photo-1574258495973-f010dfbb5371?auto=format&fit=crop&q=80&w=1200',
@@ -105,9 +106,7 @@ const categoryImages = computed(() => {
 })
 
 // Fetch real data from backend
-const { data: products, pending } = await useFetch(() => `/products/category/${slug.value}`, {
-  baseURL: config.public.apiBase
-})
+const { data: products, pending } = await useAsyncData(() => 'category-' + slug.value, () => $api<Product[]>('/products/category/' + slug.value))
 
 // Sorting Logic
 const sortedProducts = computed(() => {

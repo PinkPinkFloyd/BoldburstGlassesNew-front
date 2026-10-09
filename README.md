@@ -1,60 +1,33 @@
-# Nuxt Starter Template
+# BoldBurst Glasses
 
-[![Nuxt UI](https://img.shields.io/badge/Made%20with-Nuxt%20UI-00DC82?logo=nuxt&labelColor=020420)](https://ui.nuxt.com)
+Nuxt 4 + Vue 3 + Pinia eyewear storefront, with a self-contained GitHub Pages demo.
 
-Use this template to get started with [Nuxt UI](https://ui.nuxt.com) quickly.
+- Demo: https://pinkpinkfloyd.github.io/BoldburstGlassesNew-front/
+- Backend source: https://github.com/PinkPinkFloyd/boldburstGlassesNew
+- Production website code remains on the main branch. Demo code and Pages deployment use github-pages-demo.
 
-- [Live demo](https://starter-template.nuxt.dev/)
-- [Documentation](https://ui.nuxt.com/docs/getting-started/installation/nuxt)
+## Run the demo
 
-<a href="https://starter-template.nuxt.dev/" target="_blank">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://ui.nuxt.com/assets/templates/nuxt/starter-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="https://ui.nuxt.com/assets/templates/nuxt/starter-light.png">
-    <img alt="Nuxt Starter Template" src="https://ui.nuxt.com/assets/templates/nuxt/starter-light.png">
-  </picture>
-</a>
+Use Node.js 22 and npm. Run npm ci, then npm run dev:demo.
+Sign in with demo@example.com and demo1234. You can also register a made-up identity using the same demo passphrase.
 
-> The starter template for Vue is on https://github.com/nuxt-ui-templates/starter-vue.
+Four categories and sixteen products come from the existing backend seed data. Browse variants, add items, change quantities, place a simulated paid order, and inspect your order history.
+All demo state uses the browser storage key boldburst:demo:v1. No passwords or shipping addresses are persisted. Orders are isolated per identity. Reset demo clears all demo identities, session, carts and orders.
+No real API, database or payment service is required. Product photographs still load from Unsplash; icons are bundled locally. If browser storage is blocked, the current tab uses memory and refresh starts a new session.
 
-## Quick Start
+## Checks and static build
 
-```bash [Terminal]
-npm create nuxt@latest -- -t github:nuxt-ui-templates/starter
-```
+Run npm run lint, npm run typecheck, npm test, and npm run generate:demo.
+The static artifact is .output/public. Set NUXT_APP_BASE_URL=/BoldburstGlassesNew-front/ for repository hosting.
+The Pages workflow publishes only github-pages-demo, with history routing fallback in 404.html. The existing Docker deployment is restricted to main and is not triggered by demo commits.
 
-## Deploy your own
+## Data and interfaces
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-name=starter&repository-url=https%3A%2F%2Fgithub.com%2Fnuxt-ui-templates%2Fstarter&demo-image=https%3A%2F%2Fui.nuxt.com%2Fassets%2Ftemplates%2Fnuxt%2Fstarter-dark.png&demo-url=https%3A%2F%2Fstarter-template.nuxt.dev%2F&demo-title=Nuxt%20Starter%20Template&demo-description=A%20minimal%20template%20to%20get%20started%20with%20Nuxt%20UI.)
-
-## Setup
-
-Make sure to install the dependencies:
-
-```bash
-pnpm install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-pnpm dev
-```
+The shop API plugin selects the local adapter when NUXT_PUBLIC_DEMO_MODE=true. It never falls back to a network request in demo mode. Product, identity, cart and order consumers share typed interfaces.
+Prices retain the seed currency (USD); display conversion to INR uses 91 and rounded integer cents once. Cart and checkout use the same totals calculation, including 8% simulated tax.
+The demo adapter covers products, category/detail lookup, auth, cart mutations, order creation/history and reset. The seed data has no live customer or order records.
 
 ## Production
 
-Build the application for production:
-
-```bash
-pnpm build
-```
-
-Locally preview production build:
-
-```bash
-pnpm preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+Use the main branch for the original server deployment. This branch's checkout is deliberately a demonstration workflow. Do not deploy it as a real shop.
+Never commit .env files or private keys. Copy .env.example for local configuration; browser-public configuration must not contain secrets.

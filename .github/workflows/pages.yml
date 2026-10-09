@@ -1,0 +1,40 @@
+name: Deploy demo to GitHub Pages
+on:
+  push:
+    branches: [github-pages-demo]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages-demo
+  cancel-in-progress: true
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/github-pages-demo'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      NUXT_PUBLIC_DEMO_MODE: 'true'
+      NUXT_APP_BASE_URL: /BoldburstGlassesNew-front/
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run generate:demo
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .output/public
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

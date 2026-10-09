@@ -1,18 +1,9 @@
-// plugins/auth.client.ts
-import { useAuthStore } from '~/stores/auth'
-
-export default defineNuxtPlugin(() => {
-  const auth = useAuthStore()
-  auth.initialize()
-
-  return {
-    provide: {
-      setAuthToken(token: string | null) {
-        auth.setToken(token)
-      },
-      clearAuth() {
-        auth.logout()
-      }
-    }
-  }
+export default defineNuxtPlugin({
+  name: 'shop-session',
+  dependsOn: ['shop-api'],
+  async setup() {
+    const auth = useAuthStore()
+    await auth.initialize()
+    if (useRuntimeConfig().public.demoMode || auth.isAuthenticated) await useCartStore().load()
+  },
 })

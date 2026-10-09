@@ -1,77 +1,31 @@
-<template>
-  <div class="flex min-h-[calc(100vh-200px)] items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-    <div class="w-full max-w-md space-y-8">
-      <div>
-        <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-          Sign in to your account
-        </h2>
-        <p class="mt-2 text-center text-sm text-gray-600">
-          Or
-          <NuxtLink to="/register" class="font-medium text-primary-600 hover:text-primary-500">
-            create a new account
-          </NuxtLink>
-        </p>
-      </div>
-      <form class="mt-8 space-y-6" @submit.prevent="handleLogin">
-        <div class="space-y-4 rounded-md shadow-sm">
-          <UFormField label="Email address" name="email">
-            <UInput v-model="email" type="email" required placeholder="you@example.com" size="lg" class="w-full" />
-          </UFormField>
-          <UFormField label="Password" name="password">
-            <UInput v-model="password" type="password" required placeholder="********" size="lg" class="w-full" />
-          </UFormField>
-        </div>
-
-        <div class="flex items-center justify-between">
-          <div class="flex items-center">
-            <UCheckbox label="Remember me" />
-          </div>
-          <div class="text-sm">
-            <a href="#" class="font-medium text-primary-600 hover:text-primary-500">Forgot your password?</a>
-          </div>
-        </div>
-
-        <div>
-          <UButton type="submit" block size="lg" :loading="loading" class="w-full justify-center">
-            Sign in
-          </UButton>
-        </div>
-        
-        <UAlert v-if="error" color="error" variant="subtle" title="Login Failed" :description="error" icon="i-heroicons-exclamation-circle" />
-      </form>
-    </div>
-  </div>
-</template>
-
-<script setup>
+<script setup lang="ts">
+import { DEMO_EMAIL, DEMO_PASSWORD } from '~/utils/demo-api'
+const demo = useRuntimeConfig().public.demoMode
 const auth = useAuthStore()
-const router = useRouter()
-const toast = useToast()
-
-const email = ref('')
-const password = ref('')
+const email = ref(demo ? DEMO_EMAIL : '')
+const password = ref(demo ? DEMO_PASSWORD : '')
 const loading = ref(false)
 const error = ref('')
-const { $setAuthToken } = useNuxtApp()
-const handleLogin = async () => {
+async function login() {
+  if (loading.value) return
   loading.value = true
   error.value = ''
-  try {
-    const data = await auth.login(email.value, password.value)
-    // 保存 token 到 cookie + store
-    console.log(data,'111111');
-    
-    $setAuthToken(data.access_token)
-    auth.setUser(data.user)
-
-    toast.add({ title: 'Welcome back!', icon: 'i-heroicons-check-circle', color: 'success' })
-    router.push('/')
-  } catch (e) {
-    error.value = 'Invalid email or password.'
-  } finally {
-    loading.value = false
-  }
+  try { await auth.login(email.value, password.value); await navigateTo('/') }
+  catch (cause) { error.value = cause instanceof Error ? cause.message : 'Unable to sign in' }
+  finally { loading.value = false }
 }
-
-
 </script>
+
+<template>
+  <div class="max-w-md mx-auto py-12 space-y-6">
+    <h1 class="text-3xl font-bold">{{ demo ? 'Demo sign in' : 'Sign in' }}</h1>
+    <UAlert v-if="demo" title="Try the sample account" :description="'Email: ' + DEMO_EMAIL + ' · Passphrase: ' + DEMO_PASSWORD + '. This is a local simulation; do not use a real password.'" />
+    <form class="space-y-6" @submit.prevent="login">
+      <UFormField label="Email address"><UInput v-model="email" type="email" required class="w-full" /></UFormField>
+      <UFormField :label="demo ? 'Demo passphrase' : 'Password'"><UInput v-model="password" type="password" required class="w-full" /></UFormField>
+      <UButton type="submit" block size="lg" :loading="loading" :disabled="loading">Sign in</UButton>
+      <UAlert v-if="error" title="Sign in failed" :description="error" color="error" />
+    </form>
+    <p>New here? <NuxtLink to="/register" class="underline text-primary-600">Create a demo identity</NuxtLink></p>
+  </div>
+</template>

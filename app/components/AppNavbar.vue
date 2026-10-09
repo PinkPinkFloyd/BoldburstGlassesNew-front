@@ -4,7 +4,7 @@
       <div class="flex justify-between h-16 items-center">
         <!-- Logo -->
         <div class="flex-shrink-0 flex items-center">
-          <NuxtLink to="/" class="text-2xl font-black italic tracking-tighter text-gray-900 dark:text-white uppercase">
+          <NuxtLink to="/" class="text-lg sm:text-2xl font-black italic tracking-tighter text-gray-900 dark:text-white uppercase">
             Boldburst<span class="text-primary-600">Glasses</span>
           </NuxtLink>
         </div>
@@ -20,14 +20,14 @@
         </div>
 
         <!-- Right Side: Cart & User -->
-        <div class="flex items-center space-x-6">
-          <NuxtLink to="/cart" class="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 relative">
+        <div class="flex items-center space-x-2 sm:space-x-6">
+          <NuxtLink to="/cart" aria-label="Shopping cart" class="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 relative">
             <UIcon name="i-heroicons-shopping-bag" class="w-6 h-6" />
             <span v-if="cart.totalItems > 0" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-[10px] font-bold leading-none text-white bg-primary-600 rounded-full transform translate-x-1/2 -translate-y-1/2">
               {{ cart.totalItems }}
             </span>
           </NuxtLink>
-          <NuxtLink :to="auth.isAuthenticated ? '/profile' : '/login'" class="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
+          <NuxtLink aria-label="Account" :to="auth.isAuthenticated ? '/profile' : '/login'" class="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
             <UIcon name="i-heroicons-user" class="w-6 h-6" />
           </NuxtLink>
         </div>

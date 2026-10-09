@@ -2,7 +2,7 @@
   <div class="max-w-4xl mx-auto py-12 px-4">
     <div class="text-center mb-16">
       <h1 class="text-5xl font-black text-gray-900 italic uppercase tracking-tighter mb-4">Contact Us</h1>
-      <div class="h-1.5 w-24 bg-primary-500 mx-auto"></div>
+      <div class="h-1.5 w-24 bg-primary-500 mx-auto"/>
       <p class="text-gray-500 mt-6 text-lg">Have questions? We'd love to hear from you.</p>
     </div>
 
@@ -48,7 +48,7 @@
         loading="lazy" 
         referrerpolicy="no-referrer-when-downgrade"
         class="grayscale hover:grayscale-0 transition-all duration-700"
-      ></iframe>
+      />
       <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-xl border border-gray-200 shadow-sm pointer-events-none">
         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Our Studio</p>
         <p class="text-xs font-black text-gray-900 italic">SECTOR-63, NOIDA</p>

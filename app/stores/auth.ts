@@ -1,73 +1,52 @@
-// stores/auth.ts
 import { defineStore } from 'pinia'
-
-export const useAuthStore = defineStore('auth', {
-  id: 'auth',
-  state: () => ({
-    user: null as any,
-    token: null as string | null,
-  }),
-  getters: {
-    isAuthenticated: (state) => !!state.token,
-  },
-  actions: {
-    setToken(token: string | null) {
-      this.token = token
-      if (token) localStorage.setItem('token', token)
-      else localStorage.removeItem('token')
-    },
-    setUser(user: any) {
-      this.user = user
-    },
-    logout() {
-      this.token = null
-      this.user = null
-      localStorage.removeItem('token')
-      navigateTo('/login')
-    },
-    async login(email: string, password: string) {
-      const config = useRuntimeConfig()
+import type { AuthResponse, ShopUser } from '~/types/shop'
+export const useAuthStore = defineStore('auth', () => {
+  const user = ref<ShopUser | null>(null)
+  const token = ref<string | null>(null)
+  const isAuthenticated = computed(() => user.value !== null && token.value !== null)
+  function setToken(value: string | null) {
+    token.value = value
+    if (import.meta.client && !useRuntimeConfig().public.demoMode) {
       try {
-        const data = await $fetch(`${config.public.apiBase}/auth/login`, {
-          method: 'POST',
-          body: { email, password }
-        })
-        this.setToken(data.access_token)
-        this.setUser(data.user)
-        return data
-      } catch (error) {
-        throw error
-      }
-    },
-    async register(name: string,email: string, password: string ) {
-      const config = useRuntimeConfig()
-      try {
-        const data = await $fetch(`${config.public.apiBase}/auth/register`, {
-          method: 'POST',
-          body: { email, password, name }
-        })
-        this.setToken(data.access_token)
-        this.setUser(data.user)
-        return data
-      } catch (error) {
-        throw error
-      }
-    },
-    async fetchUser() {
-      if (!this.token) return
-      try {
-        const config = useRuntimeConfig()
-        this.user = await $fetch(`${config.public.apiBase}/auth/profile`, {
-          headers: { Authorization: `Bearer ${this.token}` }
-        })
-      } catch (error) {
-        this.logout()
-      }
-    },
-    // 初始化，从 localStorage 恢复 token
-    initialize() {
-      const token = localStorage.getItem('token')
-      if (token) this.token = token
+        if (value) localStorage.setItem('token', value)
+        else localStorage.removeItem('token')
+      } catch { /* Session still works without storage. */ }
     }
   }
+  function setUser(value: ShopUser | null) { user.value = value }
+  async function fetchUser() {
+    try {
+      user.value = await useNuxtApp().$api<ShopUser>('/auth/profile')
+      if (useRuntimeConfig().public.demoMode) token.value = 'demo-session-' + user.value.id
+    } catch { user.value = null; token.value = null }
+  }
+  async function initialize() {
+    if (!useRuntimeConfig().public.demoMode) {
+      try { token.value = localStorage.getItem('token') } catch { token.value = null }
+      if (!token.value) return
+    }
+    await fetchUser()
+  }
+  async function login(email: string, password: string) {
+    const data = await useNuxtApp().$api<AuthResponse>('/auth/login', { method: 'POST', body: { email, password } })
+    setToken(data.access_token)
+    setUser(data.user)
+    await useCartStore().load()
+    return data
+  }
+  async function register(name: string, email: string, password: string) {
+    const data = await useNuxtApp().$api<AuthResponse>('/auth/register', { method: 'POST', body: { name, email, password } })
+    setToken(data.access_token)
+    setUser(data.user)
+    await useCartStore().load()
+    return data
+  }
+  async function logout() {
+    if (useRuntimeConfig().public.demoMode) await useNuxtApp().$api('/auth/logout', { method: 'POST' })
+    setToken(null)
+    setUser(null)
+    useCartStore().clearCart()
+    await navigateTo('/login')
+  }
+  return { user, token, isAuthenticated, setToken, setUser, fetchUser, initialize, login, register, logout }
 })

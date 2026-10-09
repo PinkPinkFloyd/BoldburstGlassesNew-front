@@ -2,7 +2,8 @@
   <UApp>
     <div class="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
       <!-- Navbar component -->
-      <Navbar />
+      <DemoBanner />
+      <AppNavbar />
 
       <!-- Main Content Area -->
       <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
@@ -16,13 +17,6 @@
 </template>
 
 <script setup>
-const auth = useAuthStore()
-
-// Try to restore user session on app start
-if (auth.token && !auth.user) {
-  await auth.fetchUser()
-}
-
 // Global head settings
 useHead({
   title: 'BoldburstGlasses - Premium Eyewear Store',

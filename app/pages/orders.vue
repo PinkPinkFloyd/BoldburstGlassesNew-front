@@ -1,21 +1,36 @@
+<script setup lang="ts">
+import type { ShopOrder } from '~/types/shop'
+import { rupeeCents } from '~/utils/money'
+definePageMeta({ middleware: ['auth'] })
+const { $api } = useNuxtApp()
+const { data: orders, pending, error } = await useAsyncData('orders', () => $api<ShopOrder[]>('/orders'))
+function statusColor(status: string) {
+  if (status === 'PAID' || status === 'DELIVERED') return 'success'
+  if (status === 'SHIPPED') return 'info'
+  if (status === 'PENDING') return 'warning'
+  return 'neutral'
+}
+</script>
+
 <template>
   <div class="max-w-4xl mx-auto">
     <h1 class="text-3xl font-bold mb-8">Order History</h1>
 
-    <div v-if="pending" class="py-24 text-center">
+    <UAlert v-if="error" color="error" title="Unable to load orders" :description="error.message" />
+    <div v-else-if="pending" class="py-24 text-center">
       <UIcon name="i-heroicons-arrow-path" class="w-10 h-10 animate-spin text-gray-400 mx-auto" />
     </div>
 
     <div v-else-if="orders && orders.length > 0" class="space-y-6">
       <div v-for="order in orders" :key="order.id" class="bg-white border border-gray-200 rounded-xl overflow-hidden">
-        <div class="bg-gray-50 px-6 py-4 flex justify-between items-center border-b border-gray-200">
+        <div class="bg-gray-50 px-6 py-4 flex flex-wrap gap-4 justify-between items-center border-b border-gray-200">
           <div>
             <p class="text-xs font-bold text-gray-500 uppercase tracking-wide">Order Placed</p>
             <p class="font-medium text-gray-900">{{ new Date(order.createdAt).toLocaleDateString() }}</p>
           </div>
           <div>
             <p class="text-xs font-bold text-gray-500 uppercase tracking-wide">Total</p>
-            <p class="font-medium text-gray-900">₹{{ Number(order.totalAmount  * 91).toFixed(2) }}</p>
+            <p class="font-medium text-gray-900">₹{{ (rupeeCents(order.totalAmount) / 100).toFixed(2) }}</p>
           </div>
           <div>
             <p class="text-xs font-bold text-gray-500 uppercase tracking-wide">Status</p>
@@ -23,7 +38,7 @@
           </div>
           <div class="text-right">
             <p class="text-xs font-bold text-gray-500 uppercase tracking-wide">Order #</p>
-            <p class="font-medium text-gray-900">{{ order.id }}</p>
+            <p class="font-medium text-gray-900">{{ order.orderNo || order.id }}</p>
           </div>
         </div>
 
@@ -31,7 +46,8 @@
           <div v-for="item in order.items" :key="item.id" class="flex gap-4 mb-4 last:mb-0">
             <div class="w-16 h-16 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
               <!-- Safe image access -->
-              <img :src="item.productVariant?.product?.images?.[0]?.url || 'https://placehold.co/100'"
+              <img
+:src="item.productVariant?.product?.images?.[0]?.url || 'https://placehold.co/100'"
                 class="w-full h-full object-cover">
             </div>
             <div>
@@ -49,32 +65,7 @@
       <UIcon name="i-heroicons-clipboard-document-list" class="w-16 h-16 text-gray-300 mx-auto mb-4" />
       <h3 class="text-xl font-bold text-gray-900">No orders yet</h3>
       <p class="text-gray-500 mb-6">Start shopping to see your orders here.</p>
-      <UButton to="/" color="black">Browse Products</UButton>
+      <UButton to="/" color="neutral">Browse Products</UButton>
     </div>
   </div>
 </template>
-
-<script setup>
-const auth = useAuthStore()
-const config = useRuntimeConfig()
-const { $api } = useNuxtApp()
-// Fetch orders if user is logged in
-const pending = ref(true)
-const orders = ref(null)
-onMounted(async () => {
-  let data = await $api('/orders', {
-    method: 'GET',
-  })
-  pending.value = false
-  orders.value = data
-})
-
-const statusColor = (status) => {
-  switch (status) {
-    case 'DELIVERED': return 'success'
-    case 'SHIPPED': return 'info'
-    case 'PENDING': return 'warning'
-    default: return 'neutral'
-  }
-}
-</script>

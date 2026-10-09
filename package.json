@@ -8,7 +8,10 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "dev:demo": "node scripts/demo.mjs dev",
+    "generate:demo": "node scripts/demo.mjs generate",
+    "test": "node --test tests/demo.test.mjs"
   },
   "dependencies": {
     "@iconify-json/heroicons": "^1.2.3",
@@ -24,9 +27,11 @@
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.12.1",
+    "@types/node": "^22.20.5",
+    "esbuild": "^0.25.12",
     "eslint": "^9.39.2",
     "typescript": "^5.9.3",
     "vue-tsc": "^3.2.1"
   },
-  "packageManager": "pnpm@10.26.1"
+  "packageManager": "npm@10.9.2"
 }
